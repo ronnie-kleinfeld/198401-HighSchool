@@ -1,0 +1,71 @@
+ษอออออออออออออออออออออออออออออออออออออหออออออออออออออออออออออออออออออออออออออออป
+บ Character left	 - pad left   บ Top of page	      - Ctrl PgUp      บ
+บ Character right	 - pad right  บ Bottom of file	      - Ctrl End       บ
+บ Line up		 - pad up     บ Bottom of page	      - Ctrl PgDn      บ
+บ Line down		 - pad down   บ Enter		      - Enter	       บ
+บ Start of line 	 - Home       บ Tabolator	      - Tab	       บ
+บ End of line		 - End	      บ Back tabolator	      - Shift tab      บ
+บ Word left		 - Ctrl left  บ Insert toggle	      - Ins	       บ
+บ Word right		 - Ctrl right บ Command toggle	      - Escape	       บ
+บ Page up		 - PgUp       บ Delete left char      - Del	       บ
+บ Page down		 - PgDn       บ Delete left char      - Backspace      บ
+บ Top of file		 - Ctrl Home  บ Delete line	      - Ctrl backspace บ
+บ Edit a file		 - F1	      บ 		      - Ctrl F1        บ
+บ Save a file		 - F2	      บ Edit PE      .PRO     - Ctrl F2        บ
+บ			 - F3	      บ 		      - Ctrl F3        บ
+บ			 - F4	      บ 		      - Ctrl F4        บ
+บ Quit editing		 - F5	      บ 		      - Ctrl F5        บ
+บ Delete to end of line  - F6	      บ Macro PE.PRO	      - Ctrl F6        บ
+บ Print file		 - F7	      บ Edit PE      .HLP     - Ctrl F7        บ
+บ Jump to next program	 - F8	      บ 		      - Ctrl F8        บ
+บ Insert line		 - F9	      บ 		      - Ctrl F9        บ
+บ Directory of drive A:  - F10	      บ 		      - Ctrl F10       บ
+บ Display b/w 80	 - Alt F1     บ 'ษ'                   - Shift F1       บ
+บ Display colot 80	 - Alt F2     บ 'ป'                   - Shift F2       บ
+บ Display mono		 - Alt F3     บ 'ศ'                   - Shift F3       บ
+บ			 - Alt F4     บ 'ผ'                   - Shift F4       บ
+บ '1234567890'           - Alt F5     บ 'อ'                   - Shift F5       บ
+บ			 - Alt F6     บ 'บ'                   - Shift F6       บ
+บ Move block left	 - Alt F7     บ 'ฬ'                   - Shift F7       บ
+บ Move block right	 - Alt F8     บ 'น'                   - Shift F8       บ
+บ Directory of drive B:  - Alt F9     บ 'ห'                   - Shift F9       บ
+บ Directory of drive C:  - Alt F10    บ 'ส'                   - Shift F10      บ
+บ			 - Ctrl A     บ 		      - Ctrl N	       บ
+บ Mark block		 - Ctrl B     บ Copy mark over	      - Ctrl O	       บ
+บ Copy mark		 - Ctrl C     บ Print mark	      - Ctrl P	       บ
+บ Delete mark		 - Ctrl D     บ Mark pervious word    - Ctrl Q	       บ
+บ			 - Ctrl E     บ Redraw screen	      - Ctrl R	       บ
+บ Fill mark		 - Ctrl F     บ Split line	      - Ctrl S	       บ
+บ Go to DOS		 - Ctrl G     บ Copy line to command  - Ctrl T	       บ
+บ Copy line from command - Ctrl H     บ Unmark mark	      - Ctrl U	       บ
+บ Center line		 - Ctrl I     บ Undo		      - Ctrl V	       บ
+บ Join two line 	 - Ctrl J     บ 		      - Ctrl W	       บ
+บ			 - Ctrl K     บ 		      - Ctrl X	       บ
+บ Mark line		 - Ctrl L     บ Special W.S. command  - Ctrl Y	       บ
+บ Move mark		 - Ctrl M     บ Zoom window	      - Ctrl Z	       บ
+บ Jump to next window	 - Alt equals บ Split screen	      - Alt minus      บ
+บ			 - Alt A      บ 		      - Alt N	       บ
+บ			 - Alt B      บ 		      - Alt O	       บ
+บ			 - Alt C      บ 		      - Alt P	       บ
+บ			 - Alt D      บ 		      - Alt Q	       บ
+บ			 - Alt E      บ 		      - Alt R	       บ
+บ			 - Alt F      บ 		      - Alt S	       บ
+บ			 - Alt G      บ 		      - Alt T	       บ
+บ			 - Alt H      บ 		      - Alt U	       บ
+บ			 - Alt I      บ 		      - Alt V	       บ
+บ			 - Alt J      บ 		      - Alt W	       บ
+บ			 - Alt K      บ 		      - Alt X	       บ
+บ			 - Alt L      บ 		      - Alt Y	       บ
+บ			 - Alt M      บ 		      - Alt Z	       บ
+บ Line feed for Small	 - Shift 1    บ Cancel paper out      - Alt 1	       บ
+บ Line feed for Sub\Per  - Shift 2    บ Home head	      - Alt 2	       บ
+บ Sub script		 - Shift 3    บ 		      - Alt 3	       บ
+บ Super script		 - Shift 4    บ Cancel sub\super      - Alt 4	       บ
+บ Large characters	 - Shift 5    บ Cancel large chars    - Alt 5	       บ
+บ Small chracters	 - Shift 6    บ Cancel small chars    - Alt 6	       บ
+บ Underline		 - Shift 7    บ Cancel underline      - Alt 7	       บ
+บ Double print		 - Shift 8    บ Cancel double print   - Alt 8	       บ
+บ Double srike		 - Shift 9    บ Cancel double strike  - Alt 9	       บ
+บ Set printer line feed  - Shift 0    บ Cancel all	      - Alt 0	       บ
+ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
