@@ -1,0 +1,52 @@
+PROCEDURE GO(S:TABLE;
+             Q:INTEGER);
+             VAR T,G:INTEGER;
+BEGIN
+Z:=Z+1;
+IF Q>F THEN F:=Q;
+FOR A:=1 TO 7 DO
+   FOR B:=1 TO 7 DO
+      IF (A IN [3..5]) OR (B IN [3..5]) THEN
+      IF S[A,B]='þ' THEN BEGIN
+         COUNT:=0;
+           REPEAT
+            REPEAT
+            COUNT:=COUNT+1;
+              CASE COUNT OF
+              1:BEGIN    LET2:='W';X:=A ;Y:=B-1;X1:=A;Y1:=B-2;END;
+              2:BEGIN    LET2:='Z';X:=A ;Y:=B+1;X1:=A;Y1:=B+2;END;
+              3:BEGIN    LET2:='A';X:=A-1 ;Y:=B;X1:=A-2;Y1:=B;END;
+              4:BEGIN    LET2:='S';X:=A+1 ;Y:=B;X1:=A+2;Y1:=B;END;
+              END;
+            STAGE[Q].CH:=LET2;
+{           GOTOXY(40,12);WRITE('        ');
+            GOTOXY(40,12);WRITELN(X,' ',Y,' ',X1,' ',Y1,' ',S[X1,Y1]);}
+            FLAG:=(S[X,Y]='þ') AND (S[X1,Y1]='ù')
+            UNTIL FLAG OR (COUNT=4);;
+{         --------------------------------            }
+            IF FLAG THEN BEGIN
+            S[A,B]:='ù';
+            S[X,Y]:='ù';
+            S[X1,Y1]:='þ';
+                           {   GOTOXY(X1*4,Y1*3);WRITE(S[X1,Y1]);
+                               GOTOXY(A*4,B*3);WRITE(S[A,B]);
+                               GOTOXY(X*4,Y*3);WRITE(S[X,Y]);}
+            STAGE[Q].P:=A;STAGE[Q].O:=B;
+            GOTOXY(40,10);
+            WRITELN ('        ');
+            GOTOXY(40,10);
+            WRITELN (' ',F,' ',Q);
+{           REPEAT UNTIL KEYPRESSED;}
+            END;
+          T:=A;G:=B;
+          IF Q>=ZX THEN BEGIN
+                        FOR A:=1 TO Q DO BEGIN
+                        WRITE (STAGE[A].P,' ',STAGE[A].O,STAGE[A].CH);
+                        WRITE (FLE,STAGE[A]);
+                        HALT;END;END;
+          IF   FLAG THEN GO(S,Q+1);
+          A:=T;B:=G;
+          UNTIL (COUNT=4);
+        END;
+
+END;
