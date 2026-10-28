@@ -1,0 +1,70 @@
+@using HighSchool.Web.Modules.Romi
+@model HighSchool.Web.Controllers.StoreListModel
+@{
+    ViewData["Title"] = "ROMI";
+}
+<div class="page-title">
+    <h1>רומי תכשיטים בע"מ <small class="text-muted fw-normal">ROMI LTD · אלפון חנויות</small></h1>
+    <span class="origin">ROMI.PAS · ROMISTOR.DAT</span>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="panel">
+            <h2>תפריט ראשי</h2>
+            <ul class="dos-menu">
+                <li><a asp-action="Create"><span class="key">1</span> הכנסת חנות לאלפון</a></li>
+                <li><a asp-action="Reports"><span class="key">2</span> הדפסת נתונים</a></li>
+                <li><a href="#stores"><span class="key">3</span> שינוי נתונים <span class="hint">חיפוש ברשימה</span></a></li>
+                <li><a asp-action="Report" asp-route-kind="unsorted"><span class="key">7</span> הדפסת קובץ לא ממוין</a></li>
+                <li><a asp-controller="Home" asp-action="Index"><span class="key">9</span> סוף</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="panel" id="stores">
+            <form method="get" class="row g-2 mb-3">
+                <div class="col-sm-6"><input class="form-control" name="q" value="@Model.Query" placeholder="שם חנות, איש קשר או כתובת" /></div>
+                <div class="col-sm-4">
+                    <select class="form-select" name="city">
+                        <option value="">כל הערים</option>
+                        @foreach (var c in RomiCities.All)
+                        {
+                            <option value="@c.Code" selected="@(Model.City == c.Code)">@c.Code - @c.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-2"><button class="btn btn-primary w-100">חפש</button></div>
+            </form>
+
+            <p class="text-muted small mb-2">@Model.Total חנויות</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover table-dos">
+                    <thead><tr><th>עיר</th><th>חנות</th><th>כתובת</th><th>שם</th><th>טלפון עבודה</th><th>טלפון בית</th></tr></thead>
+                    <tbody>
+                        @foreach (var s in Model.Stores)
+                        {
+                            <tr>
+                                <td>@RomiCities.NameOf(s.CityCode)</td>
+                                <td><a asp-action="Edit" asp-route-id="@s.Id">@s.StoreName</a></td>
+                                <td>@s.Address</td>
+                                <td>@s.ContactName</td>
+                                <td class="phone">@s.WorkPhone</td>
+                                <td class="phone">@s.HomePhone</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.Pages > 1)
+            {
+                <nav class="d-flex gap-2 align-items-center">
+                    <a class="btn btn-sm btn-outline-primary @(Model.Page == 1 ? "disabled" : "")" asp-route-page="@(Model.Page - 1)" asp-route-q="@Model.Query" asp-route-city="@Model.City">הקודם</a>
+                    <span class="small">עמוד @Model.Page מתוך @Model.Pages</span>
+                    <a class="btn btn-sm btn-outline-primary @(Model.Page == Model.Pages ? "disabled" : "")" asp-route-page="@(Model.Page + 1)" asp-route-q="@Model.Query" asp-route-city="@Model.City">הבא</a>
+                </nav>
+            }
+        </div>
+    </div>
+</div>

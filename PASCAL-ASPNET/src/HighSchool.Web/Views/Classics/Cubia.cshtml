@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "CUBIA";
+}
+<div class="page-title">
+    <h1>CUBIA <small class="text-muted fw-normal">the endless canyon</small></h1>
+    <span class="origin">MICRO/CUBIA.PAS</span>
+</div>
+<div class="panel">
+    <div class="d-flex gap-2 mb-3">
+        <button class="btn btn-primary btn-sm" id="toggle">Pause</button>
+    </div>
+    <pre class="screen mb-0" id="canyon" style="height: 22em; overflow: hidden"></pre>
+</div>
+@section Scripts {
+    <script>
+        // 20 visible lines, deleting the top one each step (gotoxy(1,1); delline) like the original.
+        (() => {
+            const screen = document.getElementById("canyon");
+            const lines = [];
+            let queue = [], paused = false;
+            const refill = async () => { queue = queue.concat(await (await fetch("/Classics/CubiaData?rows=400")).json()); };
+            const tick = async () => {
+                if (!paused) {
+                    if (queue.length < 40) await refill();
+                    lines.push(queue.shift());
+                    if (lines.length > 20) lines.shift();
+                    screen.textContent = lines.join("\n");
+                }
+                setTimeout(tick, 80);
+            };
+            document.getElementById("toggle").addEventListener("click", (e) => {
+                paused = !paused;
+                e.target.textContent = paused ? "Resume" : "Pause";
+            });
+            tick();
+        })();
+    </script>
+}

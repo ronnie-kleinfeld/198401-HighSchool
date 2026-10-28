@@ -1,0 +1,22 @@
+@model HighSchool.Web.Controllers.PowerForm
+@{
+    ViewData["Title"] = "HEZKA";
+}
+<div class="page-title">
+    <h1>HEZKA <small class="text-muted fw-normal">power by addition</small></h1>
+    <span class="origin">HEZKA.PAS</span>
+</div>
+<form method="post" class="panel" style="max-width: 36rem">
+    <p class="small text-muted">"enter basis and maarich" – the result is built with repeated additions only.</p>
+    <div class="row g-2 mb-3">
+        <div class="col"><label class="form-label" for="b">Basis</label><input id="b" name="Base" type="number" value="@Model.Base" class="form-control" /></div>
+        <div class="col"><label class="form-label" for="e">Maarich (exponent)</label><input id="e" name="Exponent" type="number" value="@Model.Exponent" class="form-control" /></div>
+    </div>
+    <button class="btn btn-primary">Compute</button>
+    @if (Model.Error is not null) { <div class="alert alert-warning mt-3 mb-0">@Model.Error</div> }
+    @if (Model.Result is { } r)
+    {
+        <pre class="screen mt-3 mb-0" style="white-space: pre-wrap; word-break: break-all">@Model.Base ^ @Model.Exponent = @r.Display
+additions: @r.Additions</pre>
+    }
+</form>

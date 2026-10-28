@@ -1,0 +1,82 @@
+@using HighSchool.Web.Controllers
+@model MsdCheckModel
+@{
+    ViewData["Title"] = "מערכת שעות";
+    var r = Model.Result;
+    var timetable = Model.Index > 0 ? r.Timetables[Model.Index - 1] : [];
+    const int firstHour = 8, lastHour = 23, minutes = (lastHour - firstHour) * 60;
+    string Pos(TimeOnly from, TimeOnly to)
+    {
+        var top = Math.Max(0, (from.Hour - firstHour) * 60 + from.Minute) * 100.0 / minutes;
+        var height = Math.Max(1, (to - from).TotalMinutes) * 100.0 / minutes;
+        return FormattableString.Invariant($"top:{top:0.##}%;height:{height:0.##}%");
+    }
+    var query = string.Join("&", Model.Selected.Select(id => $"courses={id}"));
+}
+<div class="page-title">
+    <h1>מערכת שעות</h1>
+    <span class="origin">Check · Look</span>
+    <button class="btn btn-outline-primary btn-sm no-print" onclick="window.print()">Print</button>
+    <a class="btn btn-outline-secondary btn-sm no-print" asp-action="Index">חזרה</a>
+</div>
+
+<div class="panel mb-3 no-print">
+    <div class="d-flex flex-wrap gap-4 align-items-center">
+        <div>צירופים שנבדקו: <strong class="num">@r.Combinations</strong></div>
+        <div>טובים: <strong class="num text-success">@r.Timetables.Count@(r.Truncated ? "+" : "")</strong></div>
+        @if (!r.Truncated) { <div>פסולים: <strong class="num text-danger">@r.Rejected</strong></div> }
+        <div class="d-flex flex-wrap gap-1">
+            @foreach (var c in Model.Courses.Where(c => Model.Selected.Contains(c.Id))) { <span class="chip">@c.Name</span> }
+        </div>
+    </div>
+    @if (r.Timetables.Count > 0)
+    {
+        <form method="get" class="d-flex gap-2 align-items-center mt-3">
+            @foreach (var id in Model.Selected) { <input type="hidden" name="courses" value="@id" /> }
+            <a class="btn btn-sm btn-outline-primary @(Model.Index <= 1 ? "disabled" : "")" href="?@query&n=@(Model.Index - 1)">הקודמת</a>
+            <span>מערכת מספר</span>
+            <input type="number" name="n" value="@Model.Index" min="1" max="@r.Timetables.Count" class="form-control form-control-sm" style="width: 6rem" />
+            <span>מתוך @r.Timetables.Count</span>
+            <button class="btn btn-sm btn-primary">הצג</button>
+            <a class="btn btn-sm btn-outline-primary @(Model.Index >= r.Timetables.Count ? "disabled" : "")" href="?@query&n=@(Model.Index + 1)">הבאה</a>
+        </form>
+    }
+</div>
+
+@if (r.Timetables.Count == 0)
+{
+    <div class="alert alert-warning">לא נמצא צירוף ללא התנגשויות. נסו להוציא קורס או לפתוח קבוצות נוספות.</div>
+}
+else
+{
+    <h2 class="h5">מערכת מספר @Model.Index</h2>
+    <div class="week-wrap">
+        <div class="week-head">
+            <div></div>
+            @for (var d = 1; d <= 6; d++) { <div class="head">@MsdController.DayNames[d]</div> }
+        </div>
+        <div class="week-body">
+            <div class="hours">
+                @for (var h = firstHour; h < lastHour; h++) { <div class="hour">@h</div> }
+            </div>
+            @for (var d = 1; d <= 6; d++)
+            {
+                var day = d;
+                <div class="day">
+                    @foreach (var b in Model.Blocked.Where(b => b.Day == day))
+                    {
+                        <div class="blocked" style="@Pos(b.From, b.To)"></div>
+                    }
+                    @foreach (var s in timetable.Where(s => s.Day == day))
+                    {
+                        <div class="lesson" style="@Pos(s.Start, s.End)">
+                            <strong>@Model.Courses.First(c => c.Id == s.CourseId).Name</strong>
+                            <small>@s.Start.ToString("HH:mm")–@s.End.ToString("HH:mm") · חדר @s.Room</small>
+                            <small>@s.Lecturer · קבוצה @s.GroupNumber</small>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}

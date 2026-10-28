@@ -1,0 +1,22 @@
+@using HighSchool.Web.Modules.Romi
+@model List<City>
+@{
+    ViewData["Title"] = "רשימת ערים";
+}
+<div class="page-title">
+    <h1>רשימת ערים</h1>
+    <button class="btn btn-outline-primary btn-sm no-print" onclick="window.print()">הדפסה</button>
+    <a class="btn btn-outline-secondary btn-sm no-print" asp-action="Reports">חזרה</a>
+</div>
+<div class="panel">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-1">
+        @foreach (var c in Model)
+        {
+            <div class="col d-flex gap-2">
+                <span class="num text-muted" style="min-width: 2rem">@c.Code</span>
+                <span>@c.Name</span>
+                <span class="phone text-muted ms-auto">@c.AreaCode</span>
+            </div>
+        }
+    </div>
+</div>

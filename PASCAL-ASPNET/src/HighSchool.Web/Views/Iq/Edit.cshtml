@@ -1,0 +1,29 @@
+@model Question
+@{
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "הכנסת מידע" : "שינוי";
+}
+<div class="page-title"><h1>@(isNew ? "הכנסת מידע" : $"שינוי - מיקום בקובץ {Model.Id}")</h1></div>
+<div class="panel" style="max-width: 46rem">
+    <form method="post" asp-action="@(isNew ? "Create" : "Edit")">
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3">
+            <label asp-for="Subject" class="form-label"></label>
+            <input asp-for="Subject" class="form-control" maxlength="20" />
+            <span asp-validation-for="Subject" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Term" class="form-label"></label>
+            <input asp-for="Term" class="form-control" maxlength="20" autofocus />
+            <span asp-validation-for="Term" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Definition" class="form-label"></label>
+            <input asp-for="Definition" class="form-control" maxlength="67" />
+            <span asp-validation-for="Definition" class="text-danger small"></span>
+        </div>
+        <button class="btn btn-primary">@(isNew ? "הכנס והמשך" : "שמור")</button>
+        <a class="btn btn-outline-secondary" asp-action="Questions">סיום</a>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

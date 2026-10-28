@@ -1,0 +1,27 @@
+@model HighSchool.Web.Controllers.CodeForm
+@{
+    ViewData["Title"] = "CODE";
+}
+<div class="page-title">
+    <h1>CODE <small class="text-muted fw-normal">shift by four</small></h1>
+    <span class="origin">CODE.PAS</span>
+</div>
+<form method="post" class="panel" style="max-width: 40rem">
+    <div class="mb-3">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="Encrypt" id="enc" value="true" checked="@Model.Encrypt" />
+            <label class="form-check-label" for="enc">1 – hatzpana (encrypt)</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="Encrypt" id="dec" value="false" checked="@(!Model.Encrypt)" />
+            <label class="form-check-label" for="dec">2 – pianuach (decrypt)</label>
+        </div>
+    </div>
+    <label for="text" class="form-label">Enter the string</label>
+    <input id="text" name="Text" value="@Model.Text" maxlength="100" class="form-control mono mb-3" autofocus />
+    <button class="btn btn-primary">Go</button>
+    @if (Model.Result is not null)
+    {
+        <pre class="screen mt-3 mb-0">@Model.Result</pre>
+    }
+</form>

@@ -1,0 +1,42 @@
+@model HighSchool.Web.Controllers.QuestionListModel
+@{
+    ViewData["Title"] = "הכנסת מידע";
+}
+<div class="page-title">
+    <h1>הכנסת מידע <small class="text-muted fw-normal">@Model.Questions.Count שאלות</small></h1>
+    <a class="btn btn-primary btn-sm" asp-action="Create">1 - הכנסה</a>
+</div>
+<div class="panel">
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-sm-6"><input class="form-control" name="q" value="@Model.Query" placeholder="מושג או פירוש" /></div>
+        <div class="col-sm-4">
+            <select name="subject" class="form-select">
+                <option value="">כל הנושאים</option>
+                @foreach (var s in Model.Subjects) { <option selected="@(s == Model.Subject)">@s</option> }
+            </select>
+        </div>
+        <div class="col-sm-2"><button class="btn btn-primary w-100">חפש</button></div>
+    </form>
+    <div class="table-responsive">
+        <table class="table table-sm table-hover table-dos">
+            <thead><tr><th>#</th><th>נושא</th><th>מושג</th><th>פירוש</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var x in Model.Questions)
+                {
+                    <tr>
+                        <td class="num">@x.Id</td>
+                        <td class="text-nowrap">@x.Subject</td>
+                        <td class="fw-semibold">@x.Term</td>
+                        <td>@x.Definition</td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@x.Id">2 - שינוי</a>
+                            <form method="post" asp-action="Delete" asp-route-id="@x.Id" class="d-inline" onsubmit="return confirm('למחוק?')">
+                                <button class="btn btn-sm btn-outline-danger">3 - מחיקה</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

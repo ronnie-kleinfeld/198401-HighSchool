@@ -1,0 +1,55 @@
+@using HighSchool.Web.Modules.Romi
+@model HighSchool.Web.Controllers.StoreReportModel
+@{
+    ViewData["Title"] = Model.Title;
+    var showCity = Model.Kind is "country" or "unsorted";
+    var first = true;
+}
+<div class="page-title">
+    <h1>@Model.Title</h1>
+    <button class="btn btn-outline-primary btn-sm no-print" onclick="window.print()">הדפסה</button>
+    <a class="btn btn-outline-secondary btn-sm no-print" asp-action="Reports">חזרה</a>
+</div>
+
+@if (Model.Groups.Count == 0)
+{
+    <div class="alert alert-warning">אין באלפון חנויות בעיר זו</div>
+}
+
+@foreach (var group in Model.Groups)
+{
+    <div class="panel @(first || Model.Kind != "directory" ? "" : "print-break")">
+        @if (!showCity)
+        {
+            <h2>@RomiCities.NameOf(group.Key) <small class="text-muted">(@group.Count())</small></h2>
+        }
+        <div class="table-responsive">
+            <table class="table table-sm table-dos">
+                <thead>
+                    <tr>
+                        <th>מס'</th>
+                        @if (showCity) { <th>קוד</th><th>עיר</th> }
+                        <th>חנות</th><th>כתובת</th><th>שם</th><th>טלפון עבודה</th><th>טלפון בית</th><th>טלפון</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var n = 0; }
+                    @foreach (var s in group)
+                    {
+                        <tr>
+                            <td class="num">@(++n)</td>
+                            @if (showCity) { <td class="num">@s.CityCode</td><td>@RomiCities.Find(s.CityCode)?.Name</td> }
+                            <td>@s.StoreName</td>
+                            <td>@s.Address</td>
+                            <td>@s.ContactName</td>
+                            <td class="phone">@s.WorkPhone</td>
+                            <td class="phone">@s.HomePhone</td>
+                            <td class="phone">@s.ExtraPhone</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    first = false;
+}

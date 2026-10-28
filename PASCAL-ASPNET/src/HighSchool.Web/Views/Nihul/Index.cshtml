@@ -1,0 +1,51 @@
+@using HighSchool.Web.Modules.Nihul
+@model HighSchool.Web.Controllers.LedgerViewModel
+@{
+    ViewData["Title"] = "NIHUL";
+}
+<div class="page-title">
+    <h1>ניהול חשבון בנק</h1>
+    <span class="origin">NIHUL.PAS · NIHUL.DAT · 1987</span>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="panel">
+            <h2>הקש בחירה</h2>
+            <div class="row g-2">
+                @foreach (var t in TransactionTypes.All)
+                {
+                    <div class="col-sm-6">
+                        <a class="d-flex align-items-center gap-2 p-2 border rounded text-decoration-none text-body" asp-action="Create" asp-route-type="@t.Letter">
+                            <span class="chip">@t.Letter</span>
+                            <span>@t.Name</span>
+                            <span class="ms-auto small @(t.IsCredit ? "text-success" : "text-danger")">@(t.IsCredit ? "+" : "−")</span>
+                        </a>
+                    </div>
+                }
+            </div>
+            <ul class="dos-menu mt-3">
+                <li><a asp-action="Report"><span class="key">P</span> יתרה <span class="hint">דף חשבון</span></a></li>
+                <li><a asp-controller="Home" asp-action="Index"><span class="key">Q</span> סיום</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="panel">
+            <h2>יתרה נוכחית</h2>
+            <p class="display-6 num @(Model.Balance < 0 ? "negative" : "")">@Model.Balance.ToString("N1")</p>
+            <h3 class="h6 mt-3">פעולות אחרונות</h3>
+            <ul class="list-unstyled small mb-0">
+                @foreach (var e in Model.Entries)
+                {
+                    var t = TransactionTypes.Find(e.Type)!;
+                    <li class="d-flex gap-2 border-bottom py-1">
+                        <span class="chip">@e.Type</span>
+                        <span>@t.Name</span>
+                        <span class="num ms-auto">@((t.Sign * e.Amount).ToString("N1"))</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

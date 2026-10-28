@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Programs";
+    var programs = new[]
+    {
+        ("Micro", "MICRO", "8085 trainer", "MICRO-A/B/C.PAS · MCRNAME.DAT",
+            "An Intel 8085 simulator with an assembler, a monitor (A, O, L, K, S, M, G, T, R), binary LEDs, toggle switches, a six-digit 7-segment display and the 1988 saved programs."),
+        ("Romi", "ROMI", "אלפון חנויות", "ROMI.PAS · ROMISTOR.DAT",
+            "Store directory for רומי תכשיטים בע\"מ: 788 stores in 65 cities, entry, search, editing and the printed directories by city."),
+        ("Iq", "IQ", "תרגול ידע כללי", "IQS / IQWYEDA / IQEYEDA / IQEPAINT · YEDA.DAT",
+            "Psychometric-test trainer: a ten-question general-knowledge drill, the question editor and the arrow-key drawing pad."),
+        ("Msd", "MSD", "מערכת שעות", "MSD_WORK/MSD.PAS",
+            "College timetable checker: tries every combination of course sections and keeps the ones without clashes."),
+        ("Nihul", "NIHUL", "ניהול חשבון", "NIHUL.PAS · NIHUL.DAT",
+            "Bank-account bookkeeping with 15 transaction types, running balance and the filtered statement."),
+        ("Classics", "PROGRAMS", "Exercises & games", "THINK · MAZE · TT-NEW · CODE · HEZKA · CUBIA",
+            "Peg solitaire, the random maze walk, the Toto 1/X/2 filler, a Caesar cipher, powers by addition and the scrolling canyon."),
+    };
+}
+
+<div class="page-title">
+    <h1>Pascal programs, 1984–1988</h1>
+    <span class="origin">PASCAL/ · Turbo Pascal 3 for MS-DOS</span>
+</div>
+<p class="lead mb-4">
+    Every program from the <code>PASCAL</code> folder, rebuilt as an ASP.NET Core 10 MVC application.
+    The original data files were imported on first start, Hebrew converted from DOS visual order.
+</p>
+
+<div class="row g-3">
+    @foreach (var (controller, name, subtitle, files, description) in programs)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="panel program-card">
+                <h2 class="mb-1"><span class="mono">@name</span> <small class="text-muted fw-normal">@subtitle</small></h2>
+                <div class="files mb-2">@files</div>
+                <p>@description</p>
+                <a class="btn btn-primary align-self-start" asp-controller="@controller" asp-action="Index">Open @name</a>
+            </div>
+        </div>
+    }
+</div>

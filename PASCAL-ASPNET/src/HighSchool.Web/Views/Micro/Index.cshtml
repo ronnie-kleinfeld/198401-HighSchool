@@ -1,0 +1,172 @@
+@using HighSchool.Web.Modules.Micro
+@model MicroMachine
+@{
+    ViewData["Title"] = "MICRO 8085";
+}
+@section Head {
+    <link rel="stylesheet" href="~/css/micro.css" asp-append-version="true" />
+}
+
+<div class="page-title">
+    <h1>MICRO <small class="text-muted fw-normal">8085 trainer · Ver 2.00</small></h1>
+    <span class="origin">MICRO-A.PAS · MICRO-B.PAS · MICRO-C.PAS</span>
+</div>
+
+<div class="micro" id="micro">
+    <div class="fkeys" role="toolbar" aria-label="Function keys">
+        <button type="button" data-fkey="F1"><kbd>F1</kbd> Orders</button>
+        <button type="button" data-fkey="F3"><kbd>F3</kbd> Error</button>
+        <button type="button" data-fkey="F5"><kbd>F5</kbd> Operator</button>
+        <a asp-controller="Home" asp-action="Index"><kbd>F7</kbd> Quit</a>
+        <button type="button" data-fkey="F9"><kbd>F9</kbd> Input\Output</button>
+    </div>
+
+    <div class="micro-grid">
+        <!-- left window: the monitor -->
+        <section class="console-wrap" aria-label="Monitor">
+            <div class="console" id="console" aria-live="polite"></div>
+            <form id="command-form" class="command" autocomplete="off">
+                <label for="command" class="visually-hidden">Command</label>
+                <span class="caret">&gt;</span>
+                <input id="command" class="mono" spellcheck="false" maxlength="40" placeholder="A2000 MVI A,38" />
+                <button class="btn btn-sm btn-warning" type="submit">Enter</button>
+            </form>
+            <div class="runbar">
+                <span id="mode" class="mode">idle</span>
+                <span id="next" class="next mono"></span>
+                <button type="button" id="step" class="btn btn-sm btn-outline-light" hidden>Step <kbd>Space</kbd></button>
+                <button type="button" id="break" class="btn btn-sm btn-danger" hidden>Break <kbd>B</kbd></button>
+                <label class="speed">Speed
+                    <select id="ips" class="form-select form-select-sm">
+                        <option value="1000">1 000 instr/s</option>
+                        <option value="5000">5 000 instr/s</option>
+                        <option value="10000" selected>10 000 instr/s (1988 PC)</option>
+                        <option value="100000">100 000 instr/s</option>
+                        <option value="3000000">3 MHz 8085 (fast)</option>
+                    </select>
+                </label>
+            </div>
+        </section>
+
+        <!-- right window: registers and the trainer's I/O -->
+        <section class="board" aria-label="Registers and ports">
+            <div class="flags mono" id="flags" title="Flag registers - s z p c">s z p c</div>
+            <table class="regs mono">
+                <tbody>
+                    <tr><th>AC</th><td><span id="r-a">00</span> <span id="r-abin" class="bin">00000000</span> <span id="r-adec" class="dec">0</span></td><td></td></tr>
+                    <tr><th>B</th><td id="r-b">00</td><th>C</th><td id="r-c">00</td><th>M</th><td id="r-mbc">00</td></tr>
+                    <tr><th>D</th><td id="r-d">00</td><th>E</th><td id="r-e">00</td><th>M</th><td id="r-mde">00</td></tr>
+                    <tr><th>H</th><td id="r-h">00</td><th>L</th><td id="r-l">00</td><th>M</th><td id="r-mhl">00</td></tr>
+                    <tr><th>SP</th><td id="r-sp" colspan="3">0000</td></tr>
+                    <tr><th>PC</th><td id="r-pc" colspan="3">0000</td><th>M</th><td id="r-mpc">00</td></tr>
+                    <tr><th>PSW</th><td id="r-psw" colspan="3">0000</td></tr>
+                </tbody>
+            </table>
+
+            <div class="io">
+                <div class="io-label">Keyboard <span class="mono">#FF</span></div>
+                <div class="kbd-line mono" id="text">[                    ]</div>
+            </div>
+
+            <div class="io">
+                <div class="io-label">Binary out <span class="mono">#00</span></div>
+                <div class="leds" id="leds">
+                    @for (var i = 7; i >= 0; i--) { <span class="led" data-bit="@i"></span> }
+                </div>
+                <div class="io-label">Display in <span class="mono">#00</span></div>
+                <div class="switches" id="switches">
+                    @for (var i = 1; i <= 8; i++) { <button type="button" class="switch" data-switch="@i" aria-pressed="false">@i</button> }
+                </div>
+                <div class="input-prompt" id="input-prompt" hidden>
+                    <span id="input-text"></span>
+                    <button type="button" class="btn btn-sm btn-warning" id="input-enter">Enter</button>
+                </div>
+            </div>
+
+            <div class="io">
+                <div class="io-label">Digital display <span class="mono">#04,#05</span></div>
+                <div class="digits" id="digits">
+                    @for (var i = 0; i < IoPanel.DigitCount; i++)
+                    {
+                        <svg class="digit" viewBox="0 0 44 72" data-digit="@i" aria-hidden="true">
+                            <polygon data-seg="a" points="9,4 35,4 31,9 13,9" />
+                            <polygon data-seg="b" points="36,6 40,10 38,33 33,30 35,11" />
+                            <polygon data-seg="c" points="33,41 38,38 36,62 32,66 31,60" />
+                            <polygon data-seg="d" points="7,68 31,68 35,63 11,63" />
+                            <polygon data-seg="e" points="4,62 6,38 11,41 9,60" />
+                            <polygon data-seg="f" points="8,10 12,6 13,11 11,30 6,33" />
+                            <polygon data-seg="g" points="9,36 13,32 33,32 36,36 32,40 12,40" />
+                            <circle data-seg="dp" cx="40" cy="67" r="3" />
+                        </svg>
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- F1 / F3 / F5 / F9 windows -->
+<dialog class="micro-dialog" id="dlg-F1">
+    <h2>: COMMANDS - Main menu :</h2>
+    <table class="table table-sm mono help">
+        <tbody>
+            <tr><td>A2000 MVI A,38</td><td>Append – assemble one instruction (address, mnemonic, operand in hex)</td></tr>
+            <tr><td>O2000 3E,38</td><td>Enter one instruction as op codes</td></tr>
+            <tr><td>L2000-2010 · L2000- · L2000</td><td>List in mnemonics (range / to 7FFF / one line)</td></tr>
+            <tr><td>K2000-2010</td><td>List with the op codes first</td></tr>
+            <tr><td>P2000-2010</td><td>Print the listing (opens a printable page)</td></tr>
+            <tr><td>S2000 48,54,…</td><td>Set memory to the following bytes</td></tr>
+            <tr><td>M2000-2010 3000</td><td>Move a block to a new address</td></tr>
+            <tr><td>G2000 · T2000</td><td>Run · Trace (one instruction at a time). <kbd>B</kbd> breaks.</td></tr>
+            <tr><td>R:A=15</td><td>Set A B C D E H L M, BC DE HL, SP PC PSW, flags S Z P CY</td></tr>
+            <tr><td>CLS</td><td>Clear the window</td></tr>
+        </tbody>
+    </table>
+    <p class="small text-muted mb-2">Ports: <span class="mono">OUT #00</span> LEDs · <span class="mono">IN #00</span> switches ·
+        <span class="mono">OUT #05</span> select digit (8x, x+8 = auto-advance) · <span class="mono">OUT #04</span> segments (active low: d c b a . g f e) ·
+        <span class="mono">OUT/IN #FF</span> text line / keyboard · <span class="mono">HOLD nnnn</span> = delay.</p>
+    <form method="dialog"><button class="btn btn-secondary btn-sm">Close</button></form>
+</dialog>
+
+<dialog class="micro-dialog" id="dlg-F3">
+    <h2>: ERROR :</h2>
+    <ol class="errors">
+        @foreach (var e in MicroError.All)
+        {
+            <li value="@e.Number"><strong>@e.Message</strong><br /><span class="text-muted">@e.Explanation</span></li>
+        }
+    </ol>
+    <form method="dialog"><button class="btn btn-secondary btn-sm">Close</button></form>
+</dialog>
+
+<dialog class="micro-dialog" id="dlg-F5">
+    <h2>: OPERATE - MAIN MENU :</h2>
+    <ul class="dos-menu">
+        <li><button type="button" data-operate="beep"><span class="key">1</span> Beep – <span id="beep-state">ON</span></button></li>
+        <li><button type="button" data-operate="ports"><span class="key">2</span> Clean ports</button></li>
+        <li><button type="button" data-operate="registers"><span class="key">3</span> Clear registers (SP=38FE, PC=2000)</button></li>
+        <li><button type="button" data-operate="memory"><span class="key">4</span> Clear memory</button></li>
+    </ul>
+    <form method="dialog" class="mt-3"><button class="btn btn-secondary btn-sm">Close</button></form>
+</dialog>
+
+<dialog class="micro-dialog" id="dlg-F9">
+    <h2>: INPUT OUTPUT - MAIN MENU :</h2>
+    <table class="table table-sm mono">
+        <thead><tr><th>NAME</th><th>START</th><th>RANGE</th><th></th></tr></thead>
+        <tbody id="programs"></tbody>
+    </table>
+    <form id="save-form" class="row g-2 align-items-end">
+        <div class="col-4"><label class="form-label small">File name</label><input class="form-control form-control-sm mono" name="name" maxlength="8" required /></div>
+        <div class="col-3"><label class="form-label small">From</label><input class="form-control form-control-sm mono" name="from" maxlength="4" placeholder="2000" required /></div>
+        <div class="col-3"><label class="form-label small">To</label><input class="form-control form-control-sm mono" name="to" maxlength="4" placeholder="20FF" required /></div>
+        <div class="col-2"><button class="btn btn-primary btn-sm w-100">Save</button></div>
+    </form>
+    <div class="text-danger small mt-2" id="io-error"></div>
+    <form method="dialog" class="mt-3"><button class="btn btn-secondary btn-sm">Close</button></form>
+</dialog>
+
+<script id="micro-state" type="application/json">@Json.Serialize(HighSchool.Web.Controllers.MicroController.State(Model))</script>
+@section Scripts {
+    <script src="~/js/micro.js" asp-append-version="true"></script>
+}

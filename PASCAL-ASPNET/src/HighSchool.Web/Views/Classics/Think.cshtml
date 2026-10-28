@@ -1,0 +1,74 @@
+@using HighSchool.Web.Modules.Classics
+@model HighSchool.Web.Controllers.ThinkModel
+@{
+    ViewData["Title"] = "THINK";
+    var g = Model.Game;
+    var moves = g.Serialize();
+    var undo = string.Join(';', g.Moves.SkipLast(1));
+    (int X, int Y)? selected = Model.SelectedX is { } sx && Model.SelectedY is { } sy && g[sx, sy] == true ? (sx, sy) : null;
+    var targets = new Dictionary<(int, int), char>();
+    if (selected is { } sel)
+    {
+        foreach (var d in g.LegalDirections(sel.X, sel.Y))
+        {
+            var (dx, dy) = PegSolitaire.Delta(d);
+            targets[(sel.X + 2 * dx, sel.Y + 2 * dy)] = d;
+        }
+    }
+    var stuck = !g.AnyMovesLeft();
+}
+<div class="page-title">
+    <h1>THINK <small class="text-muted fw-normal">peg solitaire</small></h1>
+    <span class="origin">THINK.PAS · STEP: @(g.Moves.Count + 1)</span>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="panel">
+            <div class="peg-board" aria-label="Board">
+                @for (var y = 1; y <= PegSolitaire.Size; y++)
+                {
+                    for (var x = 1; x <= PegSolitaire.Size; x++)
+                    {
+                        var cell = g[x, y];
+                        if (cell is null)
+                        {
+                            <span class="void"></span>
+                        }
+                        else if (selected is { } s && targets.TryGetValue((x, y), out var dir))
+                        {
+                            <a class="hole target" title="Jump here (@dir)"
+                               asp-action="Think" asp-route-moves="@moves" asp-route-x="@s.X" asp-route-y="@s.Y" asp-route-dir="@dir"></a>
+                        }
+                        else if (cell == true)
+                        {
+                            <a class="hole peg @(selected == (x, y) ? "selected" : "")" aria-label="Peg @x,@y"
+                               asp-action="Think" asp-route-moves="@moves" asp-route-x="@x" asp-route-y="@y"></a>
+                        }
+                        else
+                        {
+                            <span class="hole" aria-label="Empty @x,@y"></span>
+                        }
+                    }
+                }
+            </div>
+            <p class="text-center mt-3 mb-0">
+                Pegs left: <strong>@g.PegsLeft</strong>
+                @if (stuck) { <span class="ms-2 chip">@(g.PegsLeft == 1 ? "Solved!" : "No moves left")</span> }
+            </p>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="panel">
+            <h2>Moves</h2>
+            <p class="small text-muted">Click a peg, then a green hole. Directions are logged as in the original: W up, Z down, A left, S right.</p>
+            <div class="d-flex gap-2 mb-3">
+                <a class="btn btn-outline-primary btn-sm @(g.Moves.Count == 0 ? "disabled" : "")" asp-action="Think" asp-route-moves="@undo">- go back</a>
+                <a class="btn btn-outline-secondary btn-sm" asp-action="Think">New game</a>
+            </div>
+            <ol class="mono small mb-0" style="columns: 3">
+                @foreach (var m in g.Moves) { <li>@m.X @m.Y @m.Direction</li> }
+            </ol>
+        </div>
+    </div>
+</div>

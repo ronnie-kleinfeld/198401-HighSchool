@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+@{
+    var rtl = ViewData["Rtl"] as bool? ?? false;
+    var controller = ViewContext.RouteData.Values["controller"] as string;
+    string Active(string name) => string.Equals(controller, name, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<html lang="@(rtl ? "he" : "en")" dir="@(rtl ? "rtl" : "ltr")">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · PASCAL 1988</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap@(rtl ? ".rtl" : "").min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body>
+    @Html.AntiForgeryToken()
+    <header class="topbar no-print" dir="ltr">
+        <div class="container-xl d-flex flex-wrap align-items-center gap-2">
+            <a class="brand" asp-controller="Home" asp-action="Index"><span class="brand-mark">PAS</span> HighSchool 1984–88</a>
+            <nav class="modules">
+                <a class="@Active("Micro")" asp-controller="Micro" asp-action="Index">MICRO</a>
+                <a class="@Active("Romi")" asp-controller="Romi" asp-action="Index">ROMI</a>
+                <a class="@Active("Iq")" asp-controller="Iq" asp-action="Index">IQ</a>
+                <a class="@Active("Msd")" asp-controller="Msd" asp-action="Index">MSD</a>
+                <a class="@Active("Nihul")" asp-controller="Nihul" asp-action="Index">NIHUL</a>
+                <a class="@Active("Classics")" asp-controller="Classics" asp-action="Index">PROGRAMS</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container-xl py-4">
+        @if (TempData["Message"] is string message)
+        {
+            <div class="alert alert-success no-print" role="status">@message</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="footer no-print" dir="ltr">
+        <div class="container-xl">
+            Turbo Pascal originals by Raanan Kleinfeld, 1987–1988 (c) MADA · migrated to ASP.NET Core 10 MVC
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

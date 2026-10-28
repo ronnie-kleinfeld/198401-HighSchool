@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "ציור";
+}
+<div class="page-title">
+    <h1>לוח ציור <small class="text-muted fw-normal">IQEPAINT</small></h1>
+    <span class="origin">hires · setheading · forwd(1) · wrap</span>
+</div>
+<div class="row g-3">
+    <div class="col-lg-3">
+        <div class="panel">
+            <h2>ת פ ר י ט</h2>
+            <p>מקשי החצים מציירים קו, כמו הצב של Turbo Graphix. הציור עובר מצד לצד (wrap).</p>
+            <ul class="small mb-3">
+                <li><kbd>חצים</kbd> - קו</li>
+                <li><kbd>רווח</kbd> - עט למעלה / למטה</li>
+                <li><kbd>C</kbd> - ניקוי הלוח</li>
+            </ul>
+            <div>מצב העט: <span id="pen" class="chip">למטה</span></div>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <canvas id="paint" width="640" height="200" class="w-100 border rounded" style="background:#000; image-rendering: pixelated" tabindex="0" aria-label="לוח ציור"></canvas>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        // HiRes was 640x200; the turtle starts at the center and moves one pixel per key press.
+        (() => {
+            const canvas = document.getElementById("paint");
+            const g = canvas.getContext("2d");
+            let x = 320, y = 100, penDown = true;
+            g.fillStyle = "#fff";
+            const plot = () => { g.fillStyle = "#fff"; g.fillRect(x, y, 1, 1); };
+            const cursor = () => { g.fillStyle = "#ffd43b"; g.fillRect(x, y, 1, 1); };
+            plot(); cursor();
+            const moves = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
+            document.addEventListener("keydown", (e) => {
+                if (moves[e.key]) {
+                    e.preventDefault();
+                    if (penDown) plot(); else { g.fillStyle = "#000"; g.fillRect(x, y, 1, 1); }
+                    x = (x + moves[e.key][0] + 640) % 640;
+                    y = (y + moves[e.key][1] + 200) % 200;
+                    if (penDown) plot();
+                    cursor();
+                } else if (e.key === " ") {
+                    e.preventDefault();
+                    penDown = !penDown;
+                    document.getElementById("pen").textContent = penDown ? "למטה" : "למעלה";
+                } else if (e.key === "c" || e.key === "C") {
+                    g.clearRect(0, 0, 640, 200);
+                    cursor();
+                }
+            });
+            canvas.focus();
+        })();
+    </script>
+}

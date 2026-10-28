@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "IQ";
+}
+<div class="page-title">
+    <h1>IQS <small class="text-muted fw-normal">תרגול לבחינה הפסיכומטרית</small></h1>
+    <span class="origin">IQS.PAS · IQWYEDA.PAS · IQEYEDA.PAS · IQEPAINT.PAS · YEDA.DAT</span>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="panel">
+            <h2>תפריט ראשי</h2>
+            <ul class="dos-menu">
+                <li>
+                    <form method="post" asp-action="Start">
+                        <button><span class="key">4</span> תרגול - ידע כללי <span class="hint">10 שאלות</span></button>
+                    </form>
+                </li>
+                <li><a asp-action="Questions"><span class="key">2</span> הכנסת נתונים <span class="hint">@ViewData["Count"] שאלות בקובץ</span></a></li>
+                <li><a asp-action="Paint"><span class="key">3</span> צורות - לוח ציור</a></li>
+                <li><a asp-controller="Home" asp-action="Index"><span class="key">9</span> סיום</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel">
+            <h2>עזרה</h2>
+            <p>בתרגול מוצג מושג וארבעה פירושים, ויש לבחור את הפירוש הנכון. בסוף מוצגים מספר התשובות הנכונות ואחוזי ההצלחה.</p>
+            <p class="text-muted small mb-0">
+                בתפריט המקורי הופיעו גם הבנה-לוגיקה, מתמטיקה, אנגלית ותרשימי זרימה, אך רק "ידע כללי" נכתב ב-1988.
+            </p>
+        </div>
+    </div>
+</div>

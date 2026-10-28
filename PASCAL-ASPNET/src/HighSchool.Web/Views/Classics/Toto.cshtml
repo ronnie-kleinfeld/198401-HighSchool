@@ -1,0 +1,33 @@
+@model HighSchool.Web.Controllers.TotoForm
+@{
+    ViewData["Title"] = "TOTO";
+}
+<div class="page-title">
+    <h1>TT-NEW <small class="text-muted fw-normal">Toto 1 / X / 2</small></h1>
+    <span class="origin">TT-NEW.PAS</span>
+</div>
+<form method="post" class="panel" style="max-width: 52rem">
+    <p class="small text-muted">For each of the 14 matches enter the strength of the home and away team. The draw weight is
+        <span class="mono">min + |a−b| / (a+b)</span>; each of the four columns is drawn at random with those weights.</p>
+    <div class="table-responsive">
+        <table class="table table-sm table-dos align-middle">
+            <thead><tr><th>#</th><th>Home</th><th>Away</th><th>1 %</th><th>X %</th><th>2 %</th><th colspan="4">Columns</th></tr></thead>
+            <tbody>
+                @for (var i = 0; i < Model.Home.Length; i++)
+                {
+                    var r = Model.Result?[i];
+                    <tr>
+                        <td class="num">@(i + 1)</td>
+                        <td><input name="Home" value="@Model.Home[i]" type="number" min="1" max="999" class="form-control form-control-sm" style="width: 5rem" /></td>
+                        <td><input name="Away" value="@Model.Away[i]" type="number" min="1" max="999" class="form-control form-control-sm" style="width: 5rem" /></td>
+                        <td class="num">@r?.HomePct.ToString("0")</td>
+                        <td class="num">@r?.DrawPct.ToString("0")</td>
+                        <td class="num">@r?.AwayPct.ToString("0")</td>
+                        @for (var c = 0; c < 4; c++) { <td class="mono fw-bold text-center">@r?.Columns[c]</td> }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <button class="btn btn-primary">Fill the form</button>
+</form>

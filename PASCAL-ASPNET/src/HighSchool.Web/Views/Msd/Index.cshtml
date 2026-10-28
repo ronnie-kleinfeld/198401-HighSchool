@@ -1,0 +1,92 @@
+@using HighSchool.Web.Controllers
+@model MsdIndexModel
+@{
+    ViewData["Title"] = "MSD";
+    var defaults = Model.Courses.Where(c => c.IsActive).Take(5).Select(c => c.Id).ToHashSet();
+}
+<div class="page-title">
+    <h1>מערכת שעות <small class="text-muted fw-normal">MSD Check Up - Software</small></h1>
+    <span class="origin">MSD_WORK/MSD.PAS · MSD_CHEK/MSD.PAS</span>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <form method="get" asp-action="Check" class="panel">
+            <h2>Check - בדיקת צירופים</h2>
+            <p class="small text-muted">בחר את הקורסים שייכללו בבדיקה (במקור נבדקו חמשת הקורסים הראשונים).</p>
+            @foreach (var c in Model.Courses.Where(c => c.IsActive))
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="courses" value="@c.Id" id="c-@c.Id" checked="@defaults.Contains(c.Id)" />
+                    <label class="form-check-label" for="c-@c.Id">@c.Name <span class="text-muted small">(@c.Sections.Count(s => s.IsActive))</span></label>
+                </div>
+            }
+            <button class="btn btn-primary mt-3 w-100">בדיקת צירופים</button>
+        </form>
+
+        <div class="panel" id="blocked">
+            <h2>זמנים תפוסים</h2>
+            <ul class="list-unstyled">
+                @foreach (var b in Model.Blocked)
+                {
+                    <li class="d-flex align-items-center gap-2 mb-1">
+                        <span>יום @MsdController.DayNames[b.Day]</span>
+                        <span class="num">@b.From.ToString("HH:mm")–@b.To.ToString("HH:mm")</span>
+                        <form method="post" asp-action="DeleteBlocked" asp-route-id="@b.Id" class="ms-auto">
+                            <button class="btn btn-sm btn-link text-danger p-0">הסר</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+            <form method="post" asp-action="AddBlocked" class="row g-1">
+                <div class="col-4">
+                    <select name="day" class="form-select form-select-sm">
+                        @for (var d = 1; d <= 7; d++) { <option value="@d">@MsdController.DayNames[d]</option> }
+                    </select>
+                </div>
+                <div class="col-4"><input type="time" name="from" value="08:00" class="form-control form-control-sm" /></div>
+                <div class="col-4"><input type="time" name="to" value="12:00" class="form-control form-control-sm" /></div>
+                <div class="col-12"><button class="btn btn-sm btn-outline-primary w-100">הוסף זמן תפוס</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="panel">
+            <h2>רשימת הקורסים שבמערכת</h2>
+            @foreach (var c in Model.Courses)
+            {
+                <div class="mb-3" id="course-@c.Id">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="chip">@c.Id.ToString("00")</span>
+                        <strong class="@(c.IsActive ? "" : "text-decoration-line-through text-muted")">@c.Name</strong>
+                        <form method="post" asp-action="ToggleCourse" asp-route-id="@c.Id" class="ms-auto">
+                            <button class="btn btn-sm btn-link p-0">@(c.IsActive ? "הוצא מהמערכת" : "החזר למערכת")</button>
+                        </form>
+                    </div>
+                    <table class="table table-sm table-dos mb-0">
+                        <thead><tr><th>מספר</th><th>יום</th><th>משעה</th><th>עד</th><th>חדר</th><th>מרצה</th><th>Status</th></tr></thead>
+                        <tbody>
+                            @foreach (var s in c.Sections)
+                            {
+                                <tr class="@(s.IsActive ? "" : "text-muted")">
+                                    <td class="num">@s.GroupNumber.ToString("0000")</td>
+                                    <td>@MsdController.DayNames[s.Day]</td>
+                                    <td class="num">@s.Start.ToString("HH:mm")</td>
+                                    <td class="num">@s.End.ToString("HH:mm")</td>
+                                    <td class="num">@s.Room</td>
+                                    <td>@s.Lecturer</td>
+                                    <td>
+                                        <form method="post" asp-action="ToggleSection" asp-route-id="@s.Id">
+                                            <button class="btn btn-sm py-0 @(s.IsActive ? "btn-outline-success" : "btn-outline-secondary")">@(s.IsActive ? "+" : "-")</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+@using HighSchool.Web.Modules.Romi
+@{
+    ViewData["Title"] = "תפריט הדפסות";
+}
+<div class="page-title"><h1>תפריט הדפסות</h1><span class="origin">procedure OUTPUT</span></div>
+<div class="panel" style="max-width: 36rem">
+    <ul class="dos-menu">
+        <li><a asp-action="Report" asp-route-kind="directory"><span class="key">1</span> אלפון כל הערים</a></li>
+        <li>
+            <form method="get" asp-action="Report" class="d-flex gap-2">
+                <input type="hidden" name="kind" value="city" />
+                <select name="city" class="form-select">
+                    @foreach (var c in RomiCities.All) { <option value="@c.Code">@c.Code - @c.Name</option> }
+                </select>
+                <button class="btn btn-primary text-nowrap">2. אלפון לעיר</button>
+            </form>
+        </li>
+        <li><a asp-action="Report" asp-route-kind="country"><span class="key">3</span> חנויות בכל הארץ א-ב</a></li>
+        <li><a asp-action="Report" asp-route-kind="cities"><span class="key">4</span> רשימת ערים</a></li>
+        <li><a asp-action="Report" asp-route-kind="unsorted"><span class="key">7</span> כל החנויות לא ממוין</a></li>
+        <li><a asp-action="Index"><span class="key">9</span> סוף</a></li>
+    </ul>
+</div>

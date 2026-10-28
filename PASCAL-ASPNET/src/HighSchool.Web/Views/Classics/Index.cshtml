@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Programs";
+    var items = new[]
+    {
+        ("Think", "THINK", "Peg solitaire on the 33-hole board. Pick a peg, jump, go back, and see your move list."),
+        ("Maze", "MAZE", "A random self-avoiding walk from the top-left to the bottom-right corner, drawn as it goes."),
+        ("Toto", "TT-NEW", "Fill four columns of a 14-match Toto form (1 / X / 2) weighted by team strengths."),
+        ("Code", "CODE", "Encrypt (hatzpana) or decrypt (pianuach) text by shifting letters four places."),
+        ("Hezka", "HEZKA", "Raise a number to a power using nothing but addition."),
+        ("Cubia", "CUBIA", "A canyon of ═ walls that scrolls forever, steered by two dice."),
+    };
+}
+<div class="page-title">
+    <h1>Exercises &amp; games</h1>
+    <span class="origin">PASCAL/PROGRAMS · PASCAL/MICRO/CUBIA.PAS</span>
+</div>
+<div class="row g-3">
+    @foreach (var (action, name, description) in items)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="panel program-card">
+                <h2 class="mono">@name<span class="text-muted">.PAS</span></h2>
+                <p>@description</p>
+                <a class="btn btn-primary align-self-start" asp-action="@action">Run</a>
+            </div>
+        </div>
+    }
+</div>
+<p class="text-muted small mt-4">
+    Not migrated: the include files (INKEY, GETB, COLOR, TURBO.INC, GRAPH.P) are screen/keyboard helpers replaced by the web UI;
+    READ.PAS is the question list in IQ; the personal address files (ASAF.DAT, CONECTIO.DAT) were left as they are.
+</p>

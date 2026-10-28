@@ -1,0 +1,44 @@
+@using HighSchool.Web.Modules.Nihul
+@model HighSchool.Web.Controllers.LedgerViewModel
+@{
+    ViewData["Title"] = "יתרה";
+}
+<div class="page-title">
+    <h1>דף חשבון @(Model.Filter is { } f ? $"- {TransactionTypes.Find(f)!.Name}" : "")</h1>
+    <button class="btn btn-outline-primary btn-sm no-print" onclick="window.print()">הדפסה</button>
+    <a class="btn btn-outline-secondary btn-sm no-print" asp-action="Index">חזרה</a>
+</div>
+
+<form method="get" class="panel mb-3 no-print d-flex flex-wrap gap-2 align-items-center">
+    <span>לחץ על פעולה מסוימת או (Z) לכל הפעולות:</span>
+    <select name="type" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+        <option value="Z">Z - כל הפעולות</option>
+        @foreach (var t in TransactionTypes.All) { <option value="@t.Letter" selected="@(Model.Filter == t.Letter)">@t.Letter - @t.Name</option> }
+    </select>
+</form>
+
+<div class="panel">
+    <div class="table-responsive">
+        <table class="table table-sm table-dos">
+            <thead><tr><th>צ</th><th>שם פעולה</th><th>קוד</th><th>סכום</th><th>ת. הפעולה</th><th>ת. ערך</th><th>יתרה</th></tr></thead>
+            <tbody>
+                @foreach (var e in Model.Entries)
+                {
+                    var t = TransactionTypes.Find(e.Type)!;
+                    <tr>
+                        <td class="mono">@e.Type</td>
+                        <td>@t.Name</td>
+                        <td class="num">@(e.Code?.ToString() ?? "---")</td>
+                        <td class="num @(t.IsCredit ? "" : "negative")">@((t.Sign * e.Amount).ToString("N1"))</td>
+                        <td class="num">@e.Date.ToString("dd/MM/yy")</td>
+                        <td class="num">@e.ValueDate.ToString("dd/MM/yy")</td>
+                        <td class="num @(e.Balance < 0 ? "negative" : "")">@e.Balance.ToString("N1")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold"><td colspan="6">סה"כ</td><td class="num @(Model.Balance < 0 ? "negative" : "")">@Model.Balance.ToString("N1")</td></tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

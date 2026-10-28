@@ -1,0 +1,70 @@
+@{
+    ViewData["Title"] = "MAZE";
+}
+<div class="page-title">
+    <h1>MAZE <small class="text-muted fw-normal">random walk 70 × 20</small></h1>
+    <span class="origin">MAZE.PAS</span>
+</div>
+<div class="panel">
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+        <button class="btn btn-primary btn-sm" id="again">New walk</button>
+        <label class="d-flex gap-2 align-items-center small">Speed
+            <input type="range" id="speed" min="1" max="200" value="20" />
+        </label>
+        <span class="mono small ms-auto" id="stats">STEP=0 TOTAL=0</span>
+    </div>
+    <pre class="screen" id="maze" aria-label="Maze"></pre>
+</div>
+@section Scripts {
+    <script>
+        (() => {
+            const W = 70, H = 20;
+            const screen = document.getElementById("maze");
+            let timer = null;
+
+            // Box-drawing character for a path cell from the directions to its neighbours.
+            function glyph(prev, cell, next) {
+                if (!prev || !next) return "■";
+                const dirs = new Set([prev, next].map((n) => n[0] > cell[0] ? "r" : n[0] < cell[0] ? "l" : n[1] > cell[1] ? "d" : "u"));
+                const has = (a, b) => dirs.has(a) && dirs.has(b);
+                if (has("l", "r")) return "─";
+                if (has("u", "d")) return "│";
+                if (has("r", "d")) return "┌";
+                if (has("l", "d")) return "┐";
+                if (has("r", "u")) return "└";
+                return "┘";
+            }
+
+            function draw(path, erased) {
+                const grid = Array.from({ length: H }, () => Array(W).fill(" "));
+                for (const k of erased) { const [x, y] = k.split(",").map(Number); grid[y - 1][x - 1] = "∙"; }
+                path.forEach((c, i) => { grid[c[1] - 1][c[0] - 1] = glyph(path[i - 1], c, path[i + 1]); });
+                screen.textContent = grid.map((r) => r.join("") + "│").join("\n") + "\n" + "─".repeat(W) + "┘";
+            }
+
+            async function walk() {
+                clearInterval(timer);
+                const data = await (await fetch("/Classics/MazeData")).json();
+                const path = [], erased = new Set();
+                let i = 0, total = 0;
+                timer = setInterval(() => {
+                    const perTick = Number(document.getElementById("speed").value);
+                    for (let n = 0; n < perTick && i < data.events.length; n++, i++) {
+                        const e = data.events[i];
+                        if (e.kind === "add") { path.push([e.x, e.y]); erased.delete(`${e.x},${e.y}`); total++; }
+                        else path.splice(e.length).forEach((c) => erased.add(c.join(",")));
+                    }
+                    draw(path, erased);
+                    document.getElementById("stats").textContent = `STEP=${path.length} TOTAL=${total}`;
+                    if (i >= data.events.length) {
+                        clearInterval(timer);
+                        document.getElementById("stats").textContent = `STEP=${data.steps} TOTAL=${data.total}`;
+                    }
+                }, 30);
+            }
+
+            document.getElementById("again").addEventListener("click", walk);
+            walk();
+        })();
+    </script>
+}

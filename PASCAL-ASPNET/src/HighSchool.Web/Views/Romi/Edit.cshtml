@@ -1,0 +1,82 @@
+@using HighSchool.Web.Modules.Romi
+@model Store
+@{
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "הכנסת חנות" : Model.StoreName;
+    var prev = ViewData["Previous"] as int?;
+    var next = ViewData["Next"] as int?;
+}
+<div class="page-title">
+    <h1>@(isNew ? "הכנסת חנות חדשה לאלפון" : "שינוי נתונים")</h1>
+    @if (!isNew) { <span class="origin">רשומה @Model.Id</span> }
+</div>
+
+<div class="panel" style="max-width: 46rem">
+    <form method="post" asp-action="@(isNew ? "Create" : "Edit")">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="CityCode" class="form-label"></label>
+                <select asp-for="CityCode" class="form-select">
+                    @foreach (var c in RomiCities.All) { <option value="@c.Code">@c.Code - @c.Display</option> }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="StoreName" class="form-label"></label>
+                <input asp-for="StoreName" class="form-control" maxlength="20" />
+                <span asp-validation-for="StoreName" class="text-danger small"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Address" class="form-label"></label>
+                <input asp-for="Address" class="form-control" maxlength="30" />
+            </div>
+            <div class="col-md-6">
+                <label asp-for="ContactName" class="form-label"></label>
+                <input asp-for="ContactName" class="form-control" maxlength="15" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="WorkPhone" class="form-label"></label>
+                <input asp-for="WorkPhone" class="form-control phone" maxlength="12" inputmode="tel" />
+                <span asp-validation-for="WorkPhone" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="HomePhone" class="form-label"></label>
+                <input asp-for="HomePhone" class="form-control phone" maxlength="12" inputmode="tel" />
+                <span asp-validation-for="HomePhone" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="ExtraPhone" class="form-label"></label>
+                <input asp-for="ExtraPhone" class="form-control phone" maxlength="12" inputmode="tel" />
+                <span asp-validation-for="ExtraPhone" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            @if (isNew)
+            {
+                <button class="btn btn-primary" name="another" value="true">שמור והכנס חנות נוספת</button>
+                <button class="btn btn-outline-primary" name="another" value="false">שמור וסיים</button>
+            }
+            else
+            {
+                <button class="btn btn-primary">שמור שינויים</button>
+            }
+            <a class="btn btn-outline-secondary" asp-action="Index">חזרה</a>
+        </div>
+    </form>
+
+    @if (!isNew)
+    {
+        <hr />
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <a class="btn btn-sm btn-outline-primary @(prev is null ? "disabled" : "")" asp-action="Edit" asp-route-id="@prev">- הקודמת</a>
+            <a class="btn btn-sm btn-outline-primary @(next is null ? "disabled" : "")" asp-action="Edit" asp-route-id="@next">+ הבאה</a>
+            <form method="post" asp-action="Delete" asp-route-id="@Model.Id" class="ms-auto"
+                  onsubmit="return confirm('למחוק חנות זו ???')">
+                <button class="btn btn-sm btn-outline-danger">1. מחיקת חנות</button>
+            </form>
+        </div>
+    }
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

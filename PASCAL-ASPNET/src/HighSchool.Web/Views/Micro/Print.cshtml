@@ -1,0 +1,13 @@
+@model List<(int Address, string Mnemonic, string Opcodes)>
+@{
+    ViewData["Title"] = $"Listing {ViewData["Range"]}";
+}
+<div class="page-title">
+    <h1 class="mono">P@(ViewData["Range"])</h1>
+    <button class="btn btn-outline-primary btn-sm no-print" onclick="window.print()">Print</button>
+</div>
+<pre class="panel mono">@foreach (var line in Model)
+{
+@($"   {line.Address:X4}:{line.Mnemonic,-22}{line.Opcodes}")
+@Html.Raw("\n")
+}</pre>
